@@ -6,7 +6,7 @@ const refreshTokens=[];
 module.exports={
     registerUser:async (req,res)=>{
         let refreshToken,accessToken;
-        const {mobile_number, device_id, device_os, brand_name, date_of_birth, downloaded_from, app_version}=req.body;
+        const {mobile_number, device_id, device_os, brand_name, date_of_birth, downloaded_from, app_version, device_token}=req.body;
         console.log(req.body);
         const user= await models.User.findOne({where:{mobile_number:mobile_number}});
         if (user) {
@@ -25,7 +25,8 @@ module.exports={
                 date_of_birth:date_of_birth,
                 downloaded_from:downloaded_from,
                 app_version:app_version,
-                refresh_token:refreshToken
+                refresh_token:refreshToken,
+                device_token:device_token
             }
             const result= await models.User.create(data);
             res.json(result);

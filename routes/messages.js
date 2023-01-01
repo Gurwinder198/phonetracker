@@ -21,6 +21,9 @@ dotenv.config();
         }
         const group= await models.Group.create(data);
         const participantUser= await models.User.findOne({where:{id:participantId}});
+        if (!participantUser) {
+            return res.json({"message": "User does not exists"});
+        }
         let participantData = [{
             group_id : group.id,
             user_id : user.id
@@ -92,6 +95,9 @@ dotenv.config();
         await group.save();
         saveMessage(user.id, participantId, location, groupId);
         const participantUser= await models.User.findOne({where:{id:participantId}});
+        if (!participantUser) {
+            return res.json({"message": "User does not exists"});
+        }
         const messageData = {
             from_id : user.id,
             to_id : participantUser.id,
@@ -122,6 +128,9 @@ dotenv.config();
         if (groupExist) {
             saveMessage(user.id, participantId, location, groupId);
             const participantUser= await models.User.findOne({where:{id:participantId}});
+            if (!participantUser) {
+                return res.json({"message": "User does not exists"});
+            }
             const messageData = {
                 from_id : user.id,
                 to_id : participantUser.id,
@@ -162,6 +171,7 @@ dotenv.config();
         await models.Message.destroy({where:{group_id:{[Op.in]:groups}}});
         await models.Participants.destroy({where:{group_id:{[Op.in]:groups}}});
         await models.Group.destroy({where:{id:{[Op.in]:groups}}});
+        await models.User.destroy({where:{id:user.id}});
         return res.json({"message": "App Uninstalled successfully"});  
     };
     module.exports = {createGroup, sendMessage, acceptRequest, rejectRequest, sendLocation, groupList, uninstallApp};
